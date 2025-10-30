@@ -5,12 +5,14 @@ from yandex_music import Client
 from rich.console import Console
 from rich.progress import Progress, BarColumn, TextColumn, TimeRemainingColumn
 
+from dotenv import load_dotenv
+load_dotenv()
+
 console = Console()
 
 def getCurrentTrack(yaToken: str) -> dict:
-    def getImgUri(coverUri: str) -> str:
-        return f"https://{coverUri[:-2]}1000x1000"
-
+    def getImgUri(cover_uri: str) -> str:
+        return f"https://{cover_uri[:-2]}1000x1000" if cover_uri else ""
     def getTrackInfo(client: Client, trackId: int) -> dict:
         track = client.tracks([trackId])[0]
         duration = track.duration_ms // 1000
@@ -23,9 +25,6 @@ def getCurrentTrack(yaToken: str) -> dict:
             "minutes": duration // 60,
             "seconds": duration % 60,
         }
-
-    if yaToken == "<your token>":
-        raise ValueError("Change token!!!")
 
     client = Client(yaToken).init()
     deviceId = "".join(random.choices(string.ascii_lowercase, k=16))
@@ -108,7 +107,7 @@ def initialization():
     with open("logo.txt", "r", encoding="utf-8") as f:
         headerArt = f.read()
 
-    console.print(headerArt, style="bold green")
+    console.print(headerArt, style="bold green", justify="center")
     console.print('Managing the "Now Playing" module in Telegram', style="bold green")
     console.print("Developer: @nedefined $ Thanks to: mipoh.ru\n", style="bold yellow")
 
@@ -126,7 +125,9 @@ def initialization():
                 continue
 
             lastTrackId = trackId
+            
             filename = f"{trackObj['title']} - {trackObj['artist']}.mp3"
+            filename = "".join(c for c in filename if c not in '<>:"/\\|?*')
 
             console.print(f"* 3/5 - Track ID received: [bold magenta]{trackId}", style="bold cyan")
             console.print(f"* 4/5 - Downloading: [bold magenta]{filename}", style="bold cyan")
