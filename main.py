@@ -104,12 +104,13 @@ def initialization():
     token = os.getenv("ytoken")
     ym = Client(token).init()
     lastTrackId = None
-    with open("logo.txt", "r", encoding="utf-8") as f:
-        headerArt = f.read()
 
-    console.print(headerArt, style="bold green", justify="center")
-    console.print('Managing the "Now Playing" module in Telegram', style="bold green")
-    console.print("Developer: @nedefined $ Thanks to: mipoh.ru\n", style="bold yellow")
+    with open("logo.txt", "r", encoding="ascii") as fuck:
+        header = fuck.read()
+
+    console.print(header, style="bold green", justify="center")
+    console.print('Managing the "Now Playing" module in Telegram', style="bold green", justify="center")
+    console.print("Developer: @nedefined $ Thanks to: mipoh.ru\n", style="bold yellow", justify="center")
 
     while True:
         with account:
@@ -125,7 +126,7 @@ def initialization():
                 continue
 
             lastTrackId = trackId
-            
+
             filename = f"{trackObj['title']} - {trackObj['artist']}.mp3"
             filename = "".join(c for c in filename if c not in '<>:"/\\|?*')
 
